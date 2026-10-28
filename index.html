@@ -18,7 +18,7 @@
   <header class="brand"><div class="wrap brand-inner"><div class="flex items-center gap-3"><span class="brand-symbol" aria-hidden="true">÷</span><div><div class="font-bold">Matemática <span class="font-normal opacity-70">/ 9º ano</span></div><div class="text-sm opacity-80">Professor Natanael</div></div></div><span class="brand-detail text-sm opacity-80">Atividade individual · 01 e 02 de outubro de 2026</span></div></header>
   <main class="wrap shell">
     <div class="flex items-start justify-between gap-4"><div><p class="eyebrow muted mb-2">Atividade de Matemática</p><h1>Grandezas e<br class="sm:hidden"> regra de três</h1></div><span class="pill shrink-0 mt-1">20 questões</span></div>
-    <div class="deadline" role="status" aria-live="polite"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><strong>Prazo prorrogado: até 02/10/2026, às 23h59.</strong><div id="deadlineStatus" class="muted">Horário de Manaus. Conferindo o horário do servidor…</div></div></div>
+    <div class="deadline" role="status" aria-live="polite"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><strong>Atividade aberta · sem prazo final.</strong><div id="deadlineStatus" class="muted">Horário de Manaus. Conferindo o horário do servidor…</div></div></div>
     <noscript><div class="error">Ative o JavaScript do navegador para resolver e enviar a atividade.</div></noscript>
 
     <section id="identification" class="intro-grid" aria-label="Identificação e orientações">
@@ -87,8 +87,8 @@
     return data;
   }
   function serverNow(){return serverClock?Date.parse(serverClock.agora)+(performance.now()-clockSyncedAt):null;}
-  function deadlineOpen(){const now=serverNow();return now!==null&&now>=Date.parse(serverClock.inicio)&&now<Date.parse(serverClock.fim);}
-  function updateDeadline(){const now=serverNow();$('deadlineStatus').textContent=now===null?'Não foi possível conferir o horário. O envio depende da conexão com o servidor.':now<Date.parse(serverClock.inicio)?'O envio ainda não abriu. Você pode preparar suas respostas. Horário de Manaus.':now>=Date.parse(serverClock.fim)?'Prazo encerrado. O envio está bloqueado. Horário de Manaus.':'Envio aberto até 02/10, às 23h59, no horário de Manaus. Fotos opcionais.';if(!submitting){$('submitButton').disabled=!deadlineOpen();$('submitButton').textContent=deadlineOpen()?'Enviar atividade':'Envio fechado';}}
+  function deadlineOpen(){const now=serverNow();return now!==null&&now>=Date.parse(serverClock.inicio)&&(serverClock.fim==='infinity'||now<Date.parse(serverClock.fim));}
+  function updateDeadline(){const now=serverNow();$('deadlineStatus').textContent=now===null?'Não foi possível conferir o horário. O envio depende da conexão com o servidor.':now<Date.parse(serverClock.inicio)?'O envio ainda não abriu. Você pode preparar suas respostas. Horário de Manaus.':now>=Date.parse(serverClock.fim)?'Prazo encerrado. O envio está bloqueado. Horário de Manaus.':'Envio aberto, sem prazo final. Fotos opcionais.';if(!submitting){$('submitButton').disabled=!deadlineOpen();$('submitButton').textContent=deadlineOpen()?'Enviar atividade':'Envio fechado';}}
   async function syncClock(){try{await api('estado');}catch{if(!serverClock)updateDeadline();}}
   function openDraftDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open('matematica-9ano-2026',1);req.onupgradeneeded=()=>req.result.createObjectStore('rascunho');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
   function draftRead(){return new Promise((resolve,reject)=>{const r=dbDraft.transaction('rascunho').objectStore('rascunho').get('atual');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
